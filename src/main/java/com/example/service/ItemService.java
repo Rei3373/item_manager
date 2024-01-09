@@ -1,5 +1,6 @@
 package com.example.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ public class ItemService {
 		//フィールドのセット
 		item.setName(itemForm.getName());
 		item.setPrice(itemForm.getPrice());
+		// カテゴリIDをセットする
+        item.setCategoryId(itemForm.getCategoryId());
 		//repository.saveメソッドを使ってデータの保存を行う
 		return this.itemRepository.save(item);
 	}
@@ -45,17 +48,23 @@ public class ItemService {
 	
 	//データ更新用のメソッドです
 	public Item update(Integer id, ItemForm itemForm) {
-		//データ1件分のEntityを取得
 		Item item = this.findById(id);
-		//Formクラスのフィールドをセット
-		item.setName(itemForm.getName());
-		item.setPrice(itemForm.getPrice());
-		//repository.saveメソッドを使ってデータを保存
-		return this.itemRepository.save(item);
+        item.setName(itemForm.getName());
+        item.setPrice(itemForm.getPrice());
+        // カテゴリIDをセットする
+        item.setCategoryId(itemForm.getCategoryId());
+        return this.itemRepository.save(item);
 	}
 	
 	//データ削除
-	public void delete(Integer id) {
-		this.itemRepository.deleteById(id);
+	public Item delete(Integer id) {
+		Item item =this.findById(id);
+		item.setDeletedAt(LocalDateTime.now());
+		return this.itemRepository.save(item);
+	}
+	
+	//findByDeletedAtIsNull()メソッドを呼び出す
+	public List<Item> fingByDeletedAtIsNull(){
+		return this.itemRepository.findByDeletedAtIsNull();
 	}
 }
