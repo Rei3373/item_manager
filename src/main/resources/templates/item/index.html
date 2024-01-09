@@ -19,9 +19,9 @@
 		</thead>
 		<tbody>
 			<tr th:each="item : ${items}">
-				<td th;text="${item.id}"></td>
+				<td th:text="${item.id}"></td>
 				<td th:text="${item.name}"></td>
-				<td th:text="${item.price"></td>
+				<td th:text="${item.price}"></td>
 				<td>
 					<form th:action="@{item/henshu/{id}(id=${item.id})}" method="get">
 						<input type="submit" value="編集">
