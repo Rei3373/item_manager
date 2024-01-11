@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.entity.Category;
 import com.example.entity.Item;
@@ -34,8 +35,15 @@ public class ItemController {
 	//商品一覧表示
 	@GetMapping
     public String index(Model model) {
-        // DELETED_ATがnullのデータのみを検索します
+		//データの疎通確認
+		//List<Item> items = this.itemService.findAll();
+		//コンソールよりlistの中身を確認
+        //System.out.println(items.toString());
+		//return "item/index";
+		
+		// DELETED_ATがnullのデータのみを検索します
         List<Item> items = this.itemService.fingByDeletedAtIsNull();
+        //画面で利用する変数itemsをセット
         model.addAttribute("items", items);
         return "item/index";
     }
@@ -85,6 +93,19 @@ public class ItemController {
 	@PostMapping("/sakujo/{id}")
 	public String sakujo(@PathVariable("id")Integer id) {
 		this.itemService.delete(id);
+		return "redirect:/item";
+	}
+	
+	//送信ボタンのname属性がinなら入荷処理の実行
+	@PostMapping(path = "stock/{id}", params = "in")
+	public String nyuka(@PathVariable("id")Integer id, @RequestParam("stock")Integer inputValue) {
+		this.itemService.nyuka(id, inputValue);
+		return "redirect:/item";
+	}
+	//送信ボタンのname属性がoutなら出荷処理の実行
+	@PostMapping(path = "stock/{id}", params = "out")
+	public String shukka(@PathVariable("id")Integer id, @RequestParam("stock")Integer inputValue) {
+		this.itemService.shukka(id,  inputValue);
 		return "redirect:/item";
 	}
 }

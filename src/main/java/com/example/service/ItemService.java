@@ -35,6 +35,8 @@ public class ItemService {
 		item.setPrice(itemForm.getPrice());
 		// カテゴリIDをセットする
         item.setCategoryId(itemForm.getCategoryId());
+        //新規登録時は在庫数に0をセットする
+        item.setStock(0);
 		//repository.saveメソッドを使ってデータの保存を行う
 		return this.itemRepository.save(item);
 	}
@@ -66,5 +68,20 @@ public class ItemService {
 	//findByDeletedAtIsNull()メソッドを呼び出す
 	public List<Item> fingByDeletedAtIsNull(){
 		return this.itemRepository.findByDeletedAtIsNull();
+	}
+	
+	//入荷処理
+	public Item nyuka(Integer id, Integer inputValue) {
+		Item item = this.findById(id);
+		item.setStock(item.getStock() + inputValue);
+		return this.itemRepository.save(item);
+	}
+	//出荷処理
+	public Item shukka(Integer id, Integer inputValue) {
+		Item item = this.findById(id);
+		if(inputValue <= item.getStock()) {
+			item.setStock(item.getStock() - inputValue);
+		}
+		return this.itemRepository.save(item);
 	}
 }
